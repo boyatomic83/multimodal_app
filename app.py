@@ -65,7 +65,7 @@ if st.button("Run Cycle 1: Cardiac Triage", type="primary"):
         'age': age, 'heart_rate': hr, 'radiating_pain': int(rad),
         'shortness_of_breath': int(sob), 'sweating': int(sweat), 'abnormal_ecg': int(ecg)
     }])
-    cardiac_prob = float(model_stage1.predict_proba(df1))
+    cardiac_prob = float(model_stage1.predict_proba(df1)[0][1])
     if cardiac_prob >= 0.45:
         st.session_state.cycle1_passed = False
         st.error(f"⚠️ HIGH CARDIAC RISK DETECTED ({cardiac_prob*100:.1f}%). Urgent medical evaluation required.")
@@ -94,11 +94,11 @@ if st.session_state.cycle1_passed:
             'worse_after_eating': int(eat), 'burning_sensation': int(burn),
             'recent_heavy_lifting': int(lift)
         }])
-        tab_probs = model_stage2.predict_proba(df2)
+        tab_probs = model_stage2.predict_proba(df2)[0]
         
         if audio_file is not None:
             spec = process_audio(audio_file)
-            raw_prob = float(cnn_audio_model.predict(np.expand_dims(spec, axis=0), verbose=0))
+            raw_prob = float(cnn_audio_model.predict(np.expand_dims(spec, axis=0), verbose=0)[0][0])
             if raw_prob >= best_thresh:
                 asthma_prob = 0.50 + 0.50 * ((raw_prob - best_thresh) / (1.0 - best_thresh + 1e-8))
             else:
