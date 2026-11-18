@@ -1,0 +1,8 @@
+streamlit
+numpy
+pandas
+xgboost
+tensorflow
+librosa
+shap
+matplotlib
